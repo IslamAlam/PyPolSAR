@@ -17,7 +17,7 @@ repository = "https://github.com/IslamAlam/pypolsar"
 homepage = "https://github.com/IslamAlam/pypolsar"
 
 # Keywords description https://python-poetry.org/docs/pyproject/#keywords
-keywords = []  # Update me
+keywords = ['pypolsar', 'gdal', 'numpy', 'xarray']  # Update me
 
 # Pypi classifiers: https://pypi.org/classifiers/
 classifiers = [  # Update me
@@ -25,6 +25,14 @@ classifiers = [  # Update me
   "Intended Audience :: Developers",
   "Operating System :: OS Independent",
   "Topic :: Software Development :: Libraries :: Python Modules",
+  'Programming Language :: Python :: 3',
+  'Programming Language :: Python :: 3.3',
+  'Programming Language :: Python :: 3.4',
+  'Programming Language :: Python :: 3.5',
+  'Programming Language :: Python :: 3.6',
+  'Programming Language :: Python :: 3.7',
+  'Programming Language :: Python :: 3.8',
+  'Programming Language :: Python :: 3.9',
 ]
 
 [tool.poetry.scripts]
