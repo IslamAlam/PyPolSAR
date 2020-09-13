@@ -4,7 +4,7 @@ default_context:
   project_name: "pypolsar"
   project_description: "PyPolSAR is a python module for Polarimetric Synthetic Aperture Radar (PolSAR) data processing."
   organization: "Earth-Observation"
-  license: "GNU GPL v3.0"
+  license: "GPL-3.0-or-later"
   version: "0.1.0"
   github_name: "IslamAlam"
   email: "is3mansour@gmail.com"

@@ -349,7 +349,7 @@ GitHub creates the `bug`, `enhancement`, and `documentation` labels for you. Dep
 
 [![License](https://img.shields.io/github/license/IslamAlam/pypolsar)](https://github.com/IslamAlam/pypolsar/blob/master/LICENSE)
 
-This project is licensed under the terms of the `GNU GPL v3.0` license. See [LICENSE](https://github.com/IslamAlam/pypolsar/blob/master/LICENSE) for more details.
+This project is licensed under the terms of the `GPL-3.0-or-later` license. See [LICENSE](https://github.com/IslamAlam/pypolsar/blob/master/LICENSE) for more details.
 
 ## 📃 Citation
 
