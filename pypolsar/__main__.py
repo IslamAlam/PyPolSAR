@@ -42,13 +42,16 @@ def main(
     name: str = typer.Option(..., help="Name of person to greet."),
     color: Optional[Color] = typer.Option(
         None,
-        "-c", "--color", "--colour",
+        "-c",
+        "--color",
+        "--colour",
         case_sensitive=False,
         help="Color for name. If not specified then choice will be random.",
     ),
     version: bool = typer.Option(
         None,
-        "-v", "--version",
+        "-v",
+        "--version",
         callback=version_callback,
         is_eager=True,
         help="Prints the version of the pypolsar package.",
