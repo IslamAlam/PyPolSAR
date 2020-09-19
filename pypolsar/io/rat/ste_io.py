@@ -44,7 +44,7 @@ def readrat(filename, **kwargs):
     return rat_file.read(**kwargs)
 
 
-def loadrrat(filename, **kwargs):
+def loadrat(filename, **kwargs):
     """Read an entire RAT file, return it as a memory map to the numpy array.
     Convinient for reading big files especially for blockwise processing. The
      function works faster than rrat, but the disadvantage is that the array is
