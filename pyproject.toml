@@ -6,7 +6,7 @@ build-backend = "poetry.masonry.api"
 
 [tool.poetry]
 name = "pypolsar"
-version = "0.1.0"
+version = "0.1.3"
 description = "PyPolSAR is a python module for Polarimetric Synthetic Aperture Radar (PolSAR) data processing."
 readme = "README.md"
 authors = [
@@ -56,6 +56,8 @@ scikit-image = "^0.17.2"
 readline = "^6.2.4"
 mako = "^1.1.3"
 pillow = "^7.2.0"
+xarray = "^0.16.0"
+seaborn = "^0.11.0"
 
 [tool.poetry.dev-dependencies]
 darglint = "^1.4.1"

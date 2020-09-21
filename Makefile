@@ -112,6 +112,53 @@ check-style:
 	$(ISORT_COMMAND_FLAG)poetry run isort --settings-path pyproject.toml --check-only
 	$(MYPY_COMMAND_FLAG)poetry run mypy --config-file setup.cfg pypolsar tests/**/*.py
 
+.PHONY: major
+major:
+	poetry version major
+
+.PHONY: minor
+minor:
+	poetry version minor
+
+.PHONY: patch
+patch:
+	poetry version patch
+
+.PHONY: premajor
+premajor:
+	poetry version premajor
+
+.PHONY: preminor
+preminor:
+	poetry version preminor
+
+.PHONY: prepatch
+prepatch:
+	poetry version prepatch
+
+.PHONY: prerelease
+prerelease:
+	poetry version prerelease
+
+.PHONY: prerelease
+prerelease:
+	poetry version prerelease
+
+.PHONY: prerelease
+prerelease:
+	poetry version prerelease
+
+
+#	major	1.3.0	2.0.0
+#	minor	2.1.4	2.2.0
+#	patch	4.1.1	4.1.2
+#	premajor	1.0.2	2.0.0-alpha.0
+#	preminor	1.0.2	1.1.0-alpha.0
+#	prepatch	1.0.2	1.0.3-alpha.0
+#	prerelease	1.0.2	1.0.3-alpha.0
+#	prerelease	1.0.3-alpha.0	1.0.3-alpha.1
+#	prerelease	1.0.3-beta.0	1.0.3-beta.1
+
 .PHONY: codestyle
 codestyle:
 	poetry run pre-commit run --all-files
