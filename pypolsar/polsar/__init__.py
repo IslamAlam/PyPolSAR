@@ -1,3 +1,3 @@
 # rat file read and write
 
-from . import decomposition, parameters
+from . import decomposition, filters, parameters

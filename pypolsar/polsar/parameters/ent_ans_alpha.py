@@ -6,7 +6,7 @@ def ent_ani_alp(ew, ev):
     entropy_h = entropy(p)
     _, alpha_mean = alpha_angles(ev, p)
     anisotropy_a = anisotropy(p)
-    return np.stack([entropy_h, alpha_mean, anisotropy_a])
+    return np.stack([entropy_h, anisotropy_a, alpha_mean])
 
 
 def pseudo_probabilities(ew):

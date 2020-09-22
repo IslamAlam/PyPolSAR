@@ -5,7 +5,7 @@ import numpy as np
 
 def eigen_decomposition(t_matrix):
     """
-    eW -> Eigenvlaues w0 < w1 < w2
+    eW -> Eigenvalues w0 < w1 < w2
     eV -> Eigenvectors
     """
     w = np.zeros(
