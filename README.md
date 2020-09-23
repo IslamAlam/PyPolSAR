@@ -1,4 +1,4 @@
-# pypolsar
+# PyPolSAR
 
 <div align="center">
 
@@ -14,6 +14,38 @@
 
 PyPolSAR is a python module for Polarimetric Synthetic Aperture Radar (PolSAR) data processing.
 </div>
+
+Documentation & Software Citation
+
+To see the latest full documentation click on [here](https://pypolsar.readthedocs.io/en/latest/).
+
+If you use the software in a publication then please cite it using the Zenodo DOI. Be aware that this badge links to the latest package version.
+
+Please select your specific version at [to do in future] to get the DOI of that version. You should normally always use the DOI for the specific version of your record in citations. This is to ensure that other researchers can access the exact research artefact you used for reproducibility.
+
+You can find additional information regarding DOI versioning at http://help.zenodo.org/#versioning
+
+Installation
+This package should be installable through pip which downloads the package from the python package repository Pypi. However, pypolsar also needs some packages that depend on C or Fortran libraries (like netCDF4). They should be installed first with conda. See http://conda.pydata.org/docs/ on how to use it. We recommend using either Anaconda or Miniconda.
+
+```bash
+conda install -c conda-forge numpy scipy pandas netCDF4 cython libgdal gdal
+```
+Afterwards pypolsar can be installed via pip.
+
+```bash
+ pip install pypolsar
+```    
+You can also install all needed (conda and pip) dependencies at once using the following commands after cloning this repository. This is recommended for developers of the package. Note that the git --recursive flag will clone test-data, which is needed by some tests.
+
+```bash
+git clone https://github.com/IslamAlam/pypolsar.git --recursive
+cd pypolsar
+conda create -n pypolsar python=3.6 # or any supported python version
+source activate pypolsar
+conda update -f environment.yml -n pypolsar
+python setup.py develop
+```
 
 ## Very first steps
 
