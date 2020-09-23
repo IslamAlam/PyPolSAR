@@ -47,36 +47,6 @@ conda update -f environment.yml -n pypolsar
 python setup.py develop
 ```
 
-## Very first steps
-
-### Initial
-
-1. Initialize `git` inside your repo:
-
-```bash
-git init
-```
-
-2. If you don't have `Poetry` installed run:
-
-```bash
-make download-poetry
-```
-
-3. Initialize poetry and install `pre-commit` hooks:
-
-```bash
-make install
-```
-
-4. Upload initial code to GitHub (ensure you've run `make install` to use `pre-commit`):
-
-```bash
-git add .
-git commit -m ":tada: Initial commit"
-git remote add origin https://github.com/IslamAlam/pypolsar.git
-git push -u origin master
-```
 
 ### Initial setting up
 
