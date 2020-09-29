@@ -29,9 +29,9 @@ def additive_noise(c_t_matrix_44):
     c_t_matrix_33[:, :, 1, 1] = c_t_matrix_33[:, :, 1, 1] - c_t_matrix_33_diagonal[:, :, 1]
     c_t_matrix_33[:, :, 2, 2] = c_t_matrix_33[:, :, 2, 2] - c_t_matrix_33_diagonal[:, :, 2]
     """
-
-    c_t_matrix_33[:, :, 0, 0] = c_t_matrix_33[:, :, 0, 0] - noise
-    c_t_matrix_33[:, :, 1, 1] = c_t_matrix_33[:, :, 1, 1] - noise
-    c_t_matrix_33[:, :, 2, 2] = c_t_matrix_33[:, :, 2, 2] - noise
+    print("Additive T - 2*Noise")
+    c_t_matrix_33[:, :, 0, 0] = c_t_matrix_33[:, :, 0, 0] - 2*noise
+    c_t_matrix_33[:, :, 1, 1] = c_t_matrix_33[:, :, 1, 1] - 2*noise
+    c_t_matrix_33[:, :, 2, 2] = c_t_matrix_33[:, :, 2, 2] - 2*noise
 
     return c_t_matrix_33

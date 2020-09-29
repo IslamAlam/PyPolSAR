@@ -62,6 +62,15 @@ def pauli_vec(s_matrix, *args, **kwargs):
         """
         3.2.2 BISTATIC SCATTERING CASE
         4-D Pauli feature vector
+        𝑘⃗_4𝑃 = 
+                ⎡   (S₁₁ + S₂₂)   ⎤
+                ⎢                 ⎥
+        1/√2 .  ⎢   (S₁₁ - S₂₂)   ⎥
+                ⎢                 ⎥
+                ⎢   (S₁₂ + S₂₁)   ⎥
+                ⎢                 ⎥
+                ⎣   ⅈ⋅(S₁₂ - S₂₁)  ⎦
+
         """
         print("4-D Pauli feature vector")
         pauli_vector = np.zeros(
@@ -76,6 +85,12 @@ def pauli_vec(s_matrix, *args, **kwargs):
         """
         3.2.3 MONOSTATIC BACKSCATTERING CASE
         3-D Pauli feature vector
+        𝑘⃗_3𝑃 = 
+                ⎡   (Sxx + Syy)   ⎤
+                ⎢                 ⎥
+        1/√2 .  ⎢   (Sxx - Syy)   ⎥
+                ⎢                 ⎥
+                ⎣   2 . (Sxy )    ⎦
         """
         print("3-D Pauli feature vector")
         pauli_vector = np.zeros(
@@ -88,7 +103,7 @@ def pauli_vec(s_matrix, *args, **kwargs):
     return pauli_vector
 
 
-def polarimetric_coherency_t_matrix(k_vector):
+def polarimetric_coherency_t_matrix(k_vector, kernel_size=None):
     """
     Calculate the Coherency Matrix [T] and visualize the elements T11, T22, T33 as powers and the elements T13, T23, T12 as powers and their phases. Plus calculate the histograms for everything
     3.5.2 ..................................................... pg 83
@@ -118,8 +133,9 @@ def polarimetric_coherency_t_matrix(k_vector):
         pol_mat_temp = np.dot(k_vec_temp, k_vec_temp.T.conjugate())
         pol_coherency_matrix[ix, iy, :, :] = pol_mat_temp
 
-    n_window = 7
-    mean_filter = np.ones((n_window, n_window))
+    if kernel_size is None:
+        kernel_size = 7
+    mean_filter = np.ones((kernel_size, kernel_size))
     mean_filter /= sum(mean_filter)
     pol_coherency_matrix_filtered = np.zeros_like(pol_coherency_matrix)
     for ix, iy in np.ndindex(pol_coherency_matrix.shape[2:]):
