@@ -4,11 +4,16 @@ import matplotlib.pyplot as plt
 from matplotlib.colors import LogNorm
 import seaborn as sns
 import datetime
+from .plot import image_dB
 
 plt.rcParams['image.origin'] = 'lower'
 
 # Save a palette to a variable:\
-colors = ["#003FFF", "#03ED3A", "#E8000B", "#1A1A1A" ] # R, G, B, Black
+
+colors = ["#003FFF", "#E8000B", "#03ED3A", "#1A1A1A" ] # B, R, G, Black 
+colors = ["#E8000B", "#03ED3A", "#003FFF", "#1A1A1A" ] # R, G, B,Black 
+colors = ["#003FFF", "#E8000B", "#03ED3A",  "#1A1A1A" ] # Blue, Red, Green, Black
+
 palette = sns.color_palette(colors, 4)
 
 
