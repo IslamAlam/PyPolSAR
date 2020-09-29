@@ -1,13 +1,13 @@
 __all__ = ["eigen_decomposition"]
 
 import numpy as np
-from numba import jit
+from numba import jit, njit, prange
 
 
 
 def eigen_decomposition(t_matrix):
     """
-    eW -> Eigenvalues w0 < w1 < w2
+    eW -> Eigenvalues w0 < w1 < w2 ... < wn
     eV -> Eigenvectors
     """
     w = np.zeros(
@@ -55,7 +55,7 @@ def eigen_decomposition_jit(t_matrix):
 @jit(nopython=True, nogil=True, cache=True, parallel=False)
 def eigen_decomposition_jit(A):
     """
-    eW -> Eigenvalues w0 < w1 < w2
+    eW -> Eigenvalues w0 < w1 < w2 ... < wn
     eV -> Eigenvectors
     """
     # A 
@@ -77,6 +77,35 @@ def eigen_decomposition_jit(A):
     for i in range(nx):
         for j in range(ny):
 
-            w[i, j, :], v[i, j, :, :] = np.linalg.eigh(A[i, j, :, :]) 
+            w[i, j, :], v[i, j, :, :] = np.linalg.eigh(A[i, j, :, :]) # , UPLO='U' numba not supported 
+        
+    return w, v
+
+@jit(nopython=True, nogil=True, cache=True,parallel=True)
+def eigen_decomposition_jit_prange(A):
+    """
+    eW -> Eigenvalues w0 < w1 < w2 ... < wn
+    eV -> Eigenvectors
+    """
+    # A 
+    nx = A.shape[0]
+    ny = A.shape[1]
+    # t_size = A.shape[2:4]
+    w = np.zeros(
+        (nx, ny, A.shape[2]), dtype=np.float_
+    )
+    v = np.zeros(
+        (
+            nx,
+            ny,
+            A.shape[2],
+            A.shape[3],
+        ),
+        dtype=np.complex_,
+    )
+    for i in prange(nx):
+        for j in prange(ny):
+
+            w[i, j, :], v[i, j, :, :] = np.linalg.eigh(A[i, j, :, :]) # , UPLO='U' numba not supported 
         
     return w, v

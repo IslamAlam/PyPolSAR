@@ -302,7 +302,8 @@ def polarimetric_matrix_jit(k_omege_vector, mysize=None, noise=None):
     # print(k_omege_vector.shape)
 
     il_lower = np.tril_indices(pol_coherency_matrix.shape[3], 0)
-    for nx, ny in zip(il_lower[1], il_lower[0]):
+    for nx, ny in zip( il_lower[0], il_lower[1]):
+        # Multi-look only for lower tri
         # print(nx, ny)
         # print(c_t_matrix[:,:, nx, ny])
         pol_coherency_matrix_filtered[:, :, nx, ny] = signal.convolve( pol_coherency_matrix[:, :, nx, ny ], mean_filter, mode="same")
@@ -321,7 +322,8 @@ def polarimetric_matrix_jit(k_omege_vector, mysize=None, noise=None):
 def convolve_t_c_matrix(pol_coherency_matrix):
     pol_coherency_matrix_filtered = np.zeros_like(pol_coherency_matrix)
 
-    for nx, ny in zip(il_lower[1], il_lower[0]):
+    for nx, ny in zip( il_lower[0], il_lower[1]):
+        # Multi-look only for lower tri
         # print(nx, ny)
         # print(c_t_matrix[:,:, nx, ny])
         pol_coherency_matrix_filtered[:, :, nx, ny] = signal.convolve( pol_coherency_matrix[:, :, nx, ny ], mean_filter, mode="same")

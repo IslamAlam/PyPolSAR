@@ -47,7 +47,8 @@ def plot_t_c_matrix(c_t_matrix, title="T", vmin=2, vmax=98, aspect=None, origin=
         
         # plot of images
         il_lower = np.tril_indices(c_t_matrix.shape[3], -1)
-        for idx, nx, ny, ax in zip(range(4), il_lower[1], il_lower[0], axs[1, :3].flat):
+        for idx, nx, ny, ax in zip(range(4), il_lower[0], il_lower[1], axs[1, :3].flat):
+            # 
             # print(nx, ny)
             c_idx_abs = np.abs(c_t_matrix[:, :, nx, ny])
             c_idx_angle = np.angle(c_t_matrix[:, :, nx, ny])
@@ -102,7 +103,7 @@ def plot_t_c_matrix(c_t_matrix, title="T", vmin=2, vmax=98, aspect=None, origin=
 
 
 
-def plot_eigenvalues_hist_dB(array_dict, title, vmin=2, vmax=98, aspect=None, origin="lower", *args, **kwargs):
+def plot_eigenvalues_hist_dB(array_dict, suptitle, vmin=2, vmax=98, aspect=None, origin="lower", *args, **kwargs):
     colors = ["#003FFF", "#E8000B", "#03ED3A",  "#1A1A1A" ] # Blue, Red, Green, Black
     palette = sns.color_palette(colors, 4)
     # sns.palplot(palette)
@@ -138,7 +139,52 @@ def plot_eigenvalues_hist_dB(array_dict, title, vmin=2, vmax=98, aspect=None, or
         # ax = (sns.kdeplot((array.flatten()), shade=False, ax=f_cc, legend=True, label=title))
     f_hist.set_xlabel("$dB$")
     f_hist.set_ylabel("Normalized Frequency")
-    fig.suptitle(title)
-    now = datetime.datetime.now()
-    fig.savefig("eigenvalues_{}_{}.tiff".format(title, now.strftime("%Y-%m-%d-%H:%M:%S")))
+    fig.suptitle(suptitle)
+    # now = datetime.datetime.now()
+    # fig.savefig("eigenvalues_{}_{}.tiff".format(title, now.strftime("%Y-%m-%d-%H:%M:%S")))
+    return fig
+
+from matplotlib.ticker import PercentFormatter
+
+def plot_image_hist(array_dict, suptitle, aspect=None, origin="lower", *args, **kwargs):
+    colors = ["#003FFF", "#E8000B", "#03ED3A",  "#1A1A1A" ] # Blue, Red, Green, Black
+    palette = sns.color_palette(colors, 4)
+
+    n_images = len(array_dict.keys())
+    fig = plt.figure(constrained_layout=False, figsize=(9 * n_images, 10))
+    gs = fig.add_gridspec(nrows=2, ncols=n_images + 1)
+
+    for idx, key in enumerate(array_dict):
+        title = key
+        array = array_dict[key]
+        ax_im = fig.add_subplot(gs[0, idx])
+        if (np.max(array) - np.min(array)) < 1.1:
+            ax_cc = ax_im.imshow(array,  cmap='jet',
+                                vmin=0.0, vmax=1.)
+        elif (np.max(array) - np.min(array)) < 100 and (np.max(array) - np.min(array)) > 10:
+            ax_cc = ax_im.imshow(array, cmap='jet',
+                                vmin=0.0, vmax=90.)
+        else:
+            ax_cc = ax_im.imshow(array, cmap='jet',
+                                vmin=np.min(array), vmax=np.max(array))
+
+        ax_im.axis('off')
+        ax_im.set_title(title)
+        # ax_im.clim(0, 10)
+        ax_cc.set_clim(ax_cc.get_clim()[0],ax_cc.get_clim()[1])
+
+        # fig.colorbar(ax_ang, ax=f_ax2, shrink=0.6)
+        cbar = fig.colorbar(ax_cc, ax=ax_im,  # ticks=[-np.pi*.99, 0, np.pi*.99],
+                            orientation='vertical', shrink=1.0, pad=0.05)
+        cbar.ax.set_xlabel("", rotation=0)
+
+        ax_hist = fig.add_subplot(gs[1, idx])
+        ax_hist.hist((array.ravel()), color=palette[idx], bins=1000, histtype='step', label=title, density=False, weights=100*np.ones(len(array.ravel())) / len(array.ravel())) # , linestyle=(':')
+        ax_hist.set_xlim(ax_cc.get_clim())
+        # Now we format the y-axis to display percentage
+        ax_hist.yaxis.set_major_formatter(PercentFormatter(xmax=1))
+        fig.suptitle(suptitle)
+
+        # ax = (sns.kdeplot((array.flatten()), shade=False, ax=f_cc, legend=True, label=title))
+        
     return fig
