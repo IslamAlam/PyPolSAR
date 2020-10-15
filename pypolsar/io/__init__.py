@@ -63,4 +63,11 @@ Arff files (:mod:`pypolsar.io.arff`)
    ParseArffError
 """
 # rat file read and write
-from .rat import loadrat, readrat, saverat
+# from .rat import loadrat, readrat, saverat  # type: ignore
+
+__all__ = [s for s in dir() if not s.startswith("_")]
+__all__ += ["project"]
+__all__ += ["rat"]
+
+
+from . import project, rat

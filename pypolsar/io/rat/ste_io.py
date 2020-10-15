@@ -1,3 +1,5 @@
+# type: ignore
+
 """"
 Input-output Module
 ===================

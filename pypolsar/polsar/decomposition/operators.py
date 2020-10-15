@@ -3,8 +3,8 @@ __all__ = ["lex_vec", "pauli_vec"]
 import warnings
 
 import numpy as np
-from scipy import signal
 from numba import jit, njit
+from scipy import signal
 
 # class lex_vec(s_matrix):
 
@@ -198,6 +198,7 @@ def mean_filter(im, mysize=None, noise=None):
     out = signal.convolve(im, mean_filter, mode="same")
     return out
 
+
 def dot_prod(k_vector):
     # print(k_vector.shape)
     pol_coherency_matrix = np.zeros(
@@ -209,15 +210,19 @@ def dot_prod(k_vector):
         ),
         dtype=np.complex_,
     )
-    
+
     for ix, iy in np.ndindex(k_vector.shape[0:2]):
         # k_vec_temp = k_vector[ix, iy, :]
         # pol_mat_temp = np.dot(k_vector[ix, iy, :], k_vector[ix, iy, :].T.conjugate())
         # pol_coherency_matrix[ix, iy, :, :] = pol_mat_temp
-        pol_coherency_matrix[ix, iy, :, :] = np.dot(k_vector[ix, iy, :], k_vector[ix, iy, :].T.conjugate())
+        pol_coherency_matrix[ix, iy, :, :] = np.dot(
+            k_vector[ix, iy, :], k_vector[ix, iy, :].T.conjugate()
+        )
         # print(ix)
-        
+
     return pol_coherency_matrix
+
+
 @jit(nopython=True, nogil=True, cache=True, parallel=False)
 def dot_prod_jit(k_vector):
     # print(k_vector.shape)
@@ -230,14 +235,16 @@ def dot_prod_jit(k_vector):
         ),
         dtype=np.complex_,
     )
-    
+
     for ix, iy in np.ndindex(k_vector.shape[0:2]):
         k_vec_temp = k_vector[ix, iy, :].reshape(-1, 1)
         # pol_mat_temp = np.dot(k_vector[ix, iy, :], k_vector[ix, iy, :].T.conjugate())
         # pol_coherency_matrix[ix, iy, :, :] = pol_mat_temp
         # pol_coherency_matrix[ix, iy, :, :] = np.dot(k_vector[ix, iy, :], k_vector[ix, iy, :].T.conjugate())
         # print(ix)
-        pol_coherency_matrix[ix, iy, :, :] = np.dot(k_vec_temp, k_vec_temp.T.conjugate())
+        pol_coherency_matrix[ix, iy, :, :] = np.dot(
+            k_vec_temp, k_vec_temp.T.conjugate()
+        )
 
     return pol_coherency_matrix
 
@@ -250,10 +257,10 @@ def polarimetric_matrix(k_omege_vector, mysize=None, noise=None):
     pool = Pool(os.cpu_count())
     """
     pol_coherency_matrix = dot_prod(k_vector=k_omege_vector)
-    
+
     im = np.asarray(pol_coherency_matrix)
     if mysize is None:
-        mysize = [3] * (im.ndim-2)
+        mysize = [3] * (im.ndim - 2)
     mysize = np.asarray(mysize)
     if mysize.shape == ():
         mysize = np.repeat(mysize.item(), im.ndim)
@@ -266,8 +273,9 @@ def polarimetric_matrix(k_omege_vector, mysize=None, noise=None):
         pol_coherency_matrix_filtered[:, :, ix, iy] = signal.convolve(
             pol_coherency_matrix[:, :, ix, iy], mean_filter, mode="same"
         )
-    
-    return pol_coherency_matrix/np.sum(mean_filter, axis=None)
+
+    return pol_coherency_matrix / np.sum(mean_filter, axis=None)
+
 
 # @jit(nopython=False, nogil=True, cache=True, parallel=False)
 def polarimetric_matrix_jit(k_omege_vector, mysize=None, noise=None):
@@ -277,7 +285,7 @@ def polarimetric_matrix_jit(k_omege_vector, mysize=None, noise=None):
     pool = Pool(os.cpu_count())
     """
     pol_coherency_matrix = dot_prod_jit(k_vector=k_omege_vector)
-    
+
     """    
     im = np.asarray(pol_coherency_matrix)
 
@@ -302,11 +310,13 @@ def polarimetric_matrix_jit(k_omege_vector, mysize=None, noise=None):
     # print(k_omege_vector.shape)
 
     il_lower = np.tril_indices(pol_coherency_matrix.shape[3], 0)
-    for nx, ny in zip( il_lower[0], il_lower[1]):
+    for nx, ny in zip(il_lower[0], il_lower[1]):
         # Multi-look only for lower tri
         # print(nx, ny)
         # print(c_t_matrix[:,:, nx, ny])
-        pol_coherency_matrix_filtered[:, :, nx, ny] = signal.convolve( pol_coherency_matrix[:, :, nx, ny ], mean_filter, mode="same")
+        pol_coherency_matrix_filtered[:, :, nx, ny] = signal.convolve(
+            pol_coherency_matrix[:, :, nx, ny], mean_filter, mode="same"
+        )
 
     """    
     for i in range(nx):
@@ -315,16 +325,21 @@ def polarimetric_matrix_jit(k_omege_vector, mysize=None, noise=None):
             pol_coherency_matrix[:, :, i, j],
             mean_filter, mode="same")
     """
-    pol_coherency_matrix_filtered = pol_coherency_matrix_filtered/np.sum(mean_filter, axis=None)
-    
+    pol_coherency_matrix_filtered = pol_coherency_matrix_filtered / np.sum(
+        mean_filter, axis=None
+    )
+
     return pol_coherency_matrix_filtered
+
 
 def convolve_t_c_matrix(pol_coherency_matrix):
     pol_coherency_matrix_filtered = np.zeros_like(pol_coherency_matrix)
-
-    for nx, ny in zip( il_lower[0], il_lower[1]):
+    il_lower = np.tril_indices(pol_coherency_matrix.shape[3], 0)
+    for nx, ny in zip(il_lower[0], il_lower[1]):
         # Multi-look only for lower tri
         # print(nx, ny)
         # print(c_t_matrix[:,:, nx, ny])
-        pol_coherency_matrix_filtered[:, :, nx, ny] = signal.convolve( pol_coherency_matrix[:, :, nx, ny ], mean_filter, mode="same")
+        pol_coherency_matrix_filtered[:, :, nx, ny] = signal.convolve(
+            pol_coherency_matrix[:, :, nx, ny], mean_filter, mode="same"
+        )
     return pol_coherency_matrix_filtered

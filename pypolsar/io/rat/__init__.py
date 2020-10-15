@@ -1,3 +1,5 @@
+# type: ignore
+
 """
 Utilities for dealing with RAT files from DLR-HR
 

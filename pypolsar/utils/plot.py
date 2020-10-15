@@ -226,91 +226,171 @@ def bytescale(data, cmin=None, cmax=None, high=255, low=0):
     return np.cast[np.uint8](bytedata) + np.cast[np.uint8](low)
 
 
-def plot_pauli_lexi_rbg_hist_bytescale(NAME, pauli_vector=None, lexicographic_vector=None, im_bytescale=False, titles=['Pauli feature vector', 'Lexicographic feature vector'], plot_type=['rbg'], *args, **kwargs):
+def plot_pauli_lexi_rbg_hist_bytescale(
+    NAME,
+    pauli_vector=None,
+    lexicographic_vector=None,
+    im_bytescale=False,
+    titles=["Pauli feature vector", "Lexicographic feature vector"],
+    plot_type=["rbg"],
+    *args,
+    **kwargs,
+):
     n_images = len(titles)
     n_plot = len(plot_type)
-    
+
     fig = plt.figure(constrained_layout=False, figsize=(12, 24))
     gs = fig.add_gridspec(nrows=n_plot, ncols=n_images)
-    
-    
-    if 'rbg' in plot_type :
+
+    if "rbg" in plot_type:
         if pauli_vector is not None:
             f_ax = fig.add_subplot(gs[0, 0])
-            pauli_vec_rgb = stack_rgb(r=pauli_vector[:,:,1], g=pauli_vector[:,:,2], b=pauli_vector[:,:,0])
-            print('Image min:', pauli_vec_rgb.min(), 'Image mean:', pauli_vec_rgb.mean(), ',Image max:', pauli_vec_rgb.max())
+            pauli_vec_rgb = stack_rgb(
+                r=pauli_vector[:, :, 1],
+                g=pauli_vector[:, :, 2],
+                b=pauli_vector[:, :, 0],
+            )
+            print(
+                "Image min:",
+                pauli_vec_rgb.min(),
+                "Image mean:",
+                pauli_vec_rgb.mean(),
+                ",Image max:",
+                pauli_vec_rgb.max(),
+            )
             # pauli_vec_rgb_norm = np.interp(decibel_to_linear(np.abs(pauli_vec_rgb)), (decibel_to_linear(np.amin(np.abs(pauli_vec_rgb))), np.max(decibel_to_linear(np.abs(pauli_vec_rgb)))), (0, 1))
             if im_bytescale is True:
                 k_vec = np.abs(pauli_vector)
-                k_sca = k_vec**0.7
+                k_sca = k_vec ** 0.7
                 """
                 vmin=2
                 vmax=98
                 im_perc = np.percentile(np.abs(k_sca), [vmin, vmax])
                 """
-                k_1 = bytescale(k_sca[:,:,0], cmin=k_sca.min(), cmax=k_sca.mean())
-                k_2 = bytescale(k_sca[:,:,1], cmin=k_sca.min(), cmax=k_sca.mean())
-                k_3 = bytescale(k_sca[:,:,2], cmin=k_sca.min(), cmax=k_sca.mean())
+                k_1 = bytescale(
+                    k_sca[:, :, 0], cmin=k_sca.min(), cmax=k_sca.mean()
+                )
+                k_2 = bytescale(
+                    k_sca[:, :, 1], cmin=k_sca.min(), cmax=k_sca.mean()
+                )
+                k_3 = bytescale(
+                    k_sca[:, :, 2], cmin=k_sca.min(), cmax=k_sca.mean()
+                )
                 rgb = np.stack((k_2, k_3, k_1), axis=2)
-                ax_ang = f_ax.imshow(rgb, # vmin=pauli_vec_rgb.min(), vmax=pauli_vec_rgb.max(), 
-                                      *args, **kwargs)
+                ax_ang = f_ax.imshow(
+                    rgb,  # vmin=pauli_vec_rgb.min(), vmax=pauli_vec_rgb.max(),
+                    *args,
+                    **kwargs,
+                )
             else:
-                ax_ang = f_ax.imshow(stack_rgb_linear(r=pauli_vector[:,:,1], g=pauli_vector[:,:,2], b=pauli_vector[:,:,0]), # vmin=pauli_vec_rgb.min(), vmax=pauli_vec_rgb.max(), 
-                                      *args, **kwargs)
+                ax_ang = f_ax.imshow(
+                    stack_rgb_linear(
+                        r=pauli_vector[:, :, 1],
+                        g=pauli_vector[:, :, 2],
+                        b=pauli_vector[:, :, 0],
+                    ),  # vmin=pauli_vec_rgb.min(), vmax=pauli_vec_rgb.max(),
+                    *args,
+                    **kwargs,
+                )
             f_ax.set_title(titles[0])
-            f_ax.axis('off')
+            f_ax.axis("off")
 
         if lexicographic_vector is not None:
-            lexi_vec_rgb = stack_rgb(r=lexicographic_vector[:,:,0], g=lexicographic_vector[:,:,1], b=lexicographic_vector[:,:,2])
+            lexi_vec_rgb = stack_rgb(
+                r=lexicographic_vector[:, :, 0],
+                g=lexicographic_vector[:, :, 1],
+                b=lexicographic_vector[:, :, 2],
+            )
             f_ax = fig.add_subplot(gs[0, 1])
-            print('Image min:', lexi_vec_rgb.min(), 'Image mean:', lexi_vec_rgb.mean(), ',Image max:', lexi_vec_rgb.max())
-            lexi_vec_rgb_norm = np.interp(np.abs(lexi_vec_rgb), (np.amin(np.abs(lexi_vec_rgb)), np.max(np.abs(lexi_vec_rgb))), (0, 1))
+            print(
+                "Image min:",
+                lexi_vec_rgb.min(),
+                "Image mean:",
+                lexi_vec_rgb.mean(),
+                ",Image max:",
+                lexi_vec_rgb.max(),
+            )
+            lexi_vec_rgb_norm = np.interp(
+                np.abs(lexi_vec_rgb),
+                (np.amin(np.abs(lexi_vec_rgb)), np.max(np.abs(lexi_vec_rgb))),
+                (0, 1),
+            )
             if im_bytescale is True:
                 k_vec = np.abs(lexicographic_vector)
-                k_sca = k_vec**0.7
-                vmin=0
-                vmax=98
+                k_sca = k_vec ** 0.7
+                vmin = 0
+                vmax = 98
                 im_perc = np.percentile(np.abs(k_sca), [vmin, vmax])
-                k_1 = bytescale(abs(k_sca[:,:,0]), cmin=im_perc[0], cmax=1*k_sca.mean())
-                k_2 = bytescale(abs(k_sca[:,:,1]), cmin=im_perc[0], cmax=1*k_sca.mean())
-                k_3 = bytescale(abs(k_sca[:,:,2]), cmin=im_perc[0], cmax=1*k_sca.mean())
+                k_1 = bytescale(
+                    abs(k_sca[:, :, 0]), cmin=im_perc[0], cmax=1 * k_sca.mean()
+                )
+                k_2 = bytescale(
+                    abs(k_sca[:, :, 1]), cmin=im_perc[0], cmax=1 * k_sca.mean()
+                )
+                k_3 = bytescale(
+                    abs(k_sca[:, :, 2]), cmin=im_perc[0], cmax=1 * k_sca.mean()
+                )
                 rgb = np.stack((k_1, k_2, k_3), axis=2)
-                ax_ang = f_ax.imshow(rgb,
-                                      *args, **kwargs)
-                
+                ax_ang = f_ax.imshow(rgb, *args, **kwargs)
+
             else:
-                ax_ang = f_ax.imshow(stack_rgb_linear(r=lexicographic_vector[:,:,0], g=lexicographic_vector[:,:,1], b=lexicographic_vector[:,:,2]),# vmin=10, vmax=200, # vmin=lexi_vec_rgb.min(), vmax=lexi_vec_rgb.max(),
-                                      *args, **kwargs)
+                ax_ang = f_ax.imshow(
+                    stack_rgb_linear(
+                        r=lexicographic_vector[:, :, 0],
+                        g=lexicographic_vector[:, :, 1],
+                        b=lexicographic_vector[:, :, 2],
+                    ),  # vmin=10, vmax=200, # vmin=lexi_vec_rgb.min(), vmax=lexi_vec_rgb.max(),
+                    *args,
+                    **kwargs,
+                )
             f_ax.set_title(titles[-1])
-            f_ax.axis('off')
+            f_ax.axis("off")
 
-        
-
-    if 'hist' in plot_type :
+    if "hist" in plot_type:
         num_bins = 10000
-        colors = ["#E8000B", "#03ED3A", "#003FFF", "#1A1A1A" ] # R, G, B,Black 
+        colors = ["#E8000B", "#03ED3A", "#003FFF", "#1A1A1A"]  # R, G, B,Black
         palette = sns.color_palette(colors, 4)
         f_ax2 = fig.add_subplot(gs[1, :])
-        
+
         if pauli_vector is not None:
-            
-            histogram = ['${S_{HH} - S_{VV}}_{(Dihedral)}$', '${2 S_{HV}}_{(Volume)}$', '${S_{HH} + S_{VV} }_{(Surface)}$']
+
+            histogram = [
+                "${S_{HH} - S_{VV}}_{(Dihedral)}$",
+                "${2 S_{HV}}_{(Volume)}$",
+                "${S_{HH} + S_{VV} }_{(Surface)}$",
+            ]
             for i, col in zip(range(pauli_vec_rgb.shape[2]), palette):
-                chan = pauli_vec_rgb[:,:,i].ravel()
-                f_ax2.hist(chan, bins='auto', color = col, histtype='step', label=histogram[i], density=True, linestyle=('solid')) 
+                chan = pauli_vec_rgb[:, :, i].ravel()
+                f_ax2.hist(
+                    chan,
+                    bins="auto",
+                    color=col,
+                    histtype="step",
+                    label=histogram[i],
+                    density=True,
+                    linestyle=("solid"),
+                )
 
         if lexicographic_vector is not None:
-            histogram = ['$S_{HH}$', '$\sqrt{2} S_{HV}$', '$S_{VV}$']
+            histogram = ["$S_{HH}$", "$\sqrt{2} S_{HV}$", "$S_{VV}$"]
             for i, col in zip(range(lexi_vec_rgb.shape[2]), palette):
-                chan = lexi_vec_rgb[:,:,i].ravel()
-                f_ax2.hist(chan, bins='auto', color = col, histtype='step', label=histogram[i], density=True, linestyle=(':')) 
+                chan = lexi_vec_rgb[:, :, i].ravel()
+                f_ax2.hist(
+                    chan,
+                    bins="auto",
+                    color=col,
+                    histtype="step",
+                    label=histogram[i],
+                    density=True,
+                    linestyle=(":"),
+                )
 
         f_ax2.set_xlabel("Value")
         f_ax2.set_ylabel("Frequency")
-        im_perc = np.percentile((pauli_vec_rgb), [.01, 99.99])
-        f_ax2.set_xlim(im_perc[0],im_perc[1])
+        im_perc = np.percentile((pauli_vec_rgb), [0.01, 99.99])
+        f_ax2.set_xlim(im_perc[0], im_perc[1])
         f_ax2.set_title("Histogram")
 
-        plt.legend(loc='upper left')
-        
+        plt.legend(loc="upper left")
+
     return fig
