@@ -153,7 +153,9 @@ def project_quadpol_rat_files(
         return files
 
 
-def stand_pol_rat_files(DIR_campaign, ID_campaign, ID_flight, band, ID_Pass, n_try="01"):
+def stand_pol_rat_files(
+    DIR_campaign, ID_campaign, ID_flight, band, ID_Pass, n_try="01"
+):
     """Dictionary of Full Polarimetric SAR RAT files with regex
 
     Provide a dic of str for RAT files of each channel (AOI, HH, VV, HV, VH) with Regex, this aviod typical error in file name
@@ -217,37 +219,13 @@ def stand_pol_rat_files(DIR_campaign, ID_campaign, ID_flight, band, ID_Pass, n_t
         raise
     else:
         # exists
-        hh_file = list(
-            DIR_data.glob(
-                "slc_*" 
-                + "hh" 
-                + "*.rat")
-        )[0]
+        hh_file = list(DIR_data.glob("slc_*" + "hh" + "*.rat"))[0]
 
-        vv_file = list(
-            DIR_data.glob(
-                "slc_*" 
-                + "vv" 
-                + "*.rat")
-        )[0]
-        hv_file = list(
-            DIR_data.glob(
-                "slc_*" 
-                + "hv" 
-                + "*.rat")
-        )[0]
-        vh_file = list(
-            DIR_data.glob(
-                "slc_*" 
-                + "vh" 
-                + "*.rat")
-        )[0]
-        
-        aoi_file = list(
-            DIR_data.glob(
-                "incidence_" 
-                + "*.rat")
-        )[0]
+        vv_file = list(DIR_data.glob("slc_*" + "vv" + "*.rat"))[0]
+        hv_file = list(DIR_data.glob("slc_*" + "hv" + "*.rat"))[0]
+        vh_file = list(DIR_data.glob("slc_*" + "vh" + "*.rat"))[0]
+
+        aoi_file = list(DIR_data.glob("incidence_" + "*.rat"))[0]
 
         check_files_if_exist(hh_file, vv_file, vh_file, vh_file, aoi_file)
         files = {

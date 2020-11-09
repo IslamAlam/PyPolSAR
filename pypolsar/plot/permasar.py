@@ -234,6 +234,7 @@ def plot_pauli_entropy_ani_alpha_vv_hh_phi_diff(
     fig.suptitle(suptitle)
     return fig
 
+
 def plot_pauli_t_entropy_ani_alpha_vv_hh_phi_diff(
     pauli_vector,
     slc_ent_ani_alp_44_dic,
@@ -255,12 +256,12 @@ def plot_pauli_t_entropy_ani_alpha_vv_hh_phi_diff(
     # gs = fig.add_gridspec(nrows=n_plot, ncols=n_images)
 
     # Pauli
-        
-    #pauli_vector = np.stack(
+
+    # pauli_vector = np.stack(
     #    (t_matrix[:, :, 0, 0], t_matrix[:, :, 1, 1], t_matrix[:, :, 2, 2]),
     #    axis=2,
-    #)
-    
+    # )
+
     pauli_vector = pauli_vector
     if aspect is None:
         aspect = (pauli_vector.shape[1] / pauli_vector.shape[0]) / (1785 / 3140)
@@ -376,7 +377,8 @@ def plot_pauli_t_entropy_ani_alpha_vv_hh_phi_diff(
             cmap="jet",
             aspect=aspect,
             # norm=LogNorm(vmin=im_perc[0], vmax=im_perc[1]),
-            vmin=.5, vmax=1.5
+            vmin=0.5,
+            vmax=1.5,
         )
         ax_im.axis("off")
         ax_im.set_title("HH-VV Power Ratio", fontsize=24)
@@ -419,7 +421,7 @@ def plot_pauli_t_entropy_ani_alpha_vv_hh_phi_diff(
         ax_im.set_anchor(anchor="N", share=True)
     fig.suptitle(suptitle)
     return fig
-    
+
 
 def plot_eigenvalues_hist_dB(
     array_dict,
@@ -923,12 +925,9 @@ def image_dB(y):
     return 10 * np.log10(y)
 
 
-
 def plot_coherence(
     array_dict, suptitle, aspect=None, origin="lower", *args, **kwargs
 ):
-    
-
 
     colors = [
         "#003FFF",
@@ -936,15 +935,16 @@ def plot_coherence(
         "#03ED3A",
         "#1A1A1A",
     ]  # Blue, Red, Green, Black
-    palette = sns.color_palette("hls", 8) # sns.color_palette(colors, 4)
+    palette = sns.color_palette("hls", 8)  # sns.color_palette(colors, 4)
 
     n_images = len(array_dict.keys())
 
     fig_im, axs_im = plt.subplots(
-        1, n_images, constrained_layout=True, figsize=(5 * n_images, 10) )
+        1, n_images, constrained_layout=True, figsize=(5 * n_images, 10)
+    )
     fig_hist, axs_hist = plt.subplots(
-        1, n_images, constrained_layout=True, figsize=(5 * n_images, 4) )
-
+        1, n_images, constrained_layout=True, figsize=(5 * n_images, 4)
+    )
 
     for idx, key in enumerate(array_dict):
         title = key
@@ -953,19 +953,27 @@ def plot_coherence(
             aspect = (array.shape[1] / array.shape[0]) / (1785 / 3140)
         elif aspect is None:
             aspect = (array.shape[1] / array.shape[0]) / aspect
-            
+
         ax_im = axs_im[idx]
         if (np.max(array) - np.min(array)) < 1.1:
-            ax_cc = ax_im.imshow(array, cmap="jet", vmin=0.0, vmax=1.0, aspect=aspect)
+            ax_cc = ax_im.imshow(
+                array, cmap="jet", vmin=0.0, vmax=1.0, aspect=aspect
+            )
         elif (np.max(array) - np.min(array)) < 100 and (
             np.max(array) - np.min(array)
         ) > 10:
-            ax_cc = ax_im.imshow(array, cmap="jet", vmin=0.0, vmax=90.0, aspect=aspect)
+            ax_cc = ax_im.imshow(
+                array, cmap="jet", vmin=0.0, vmax=90.0, aspect=aspect
+            )
         else:
             ax_cc = ax_im.imshow(
-                array, cmap="jet", vmin=np.min(array), vmax=np.max(array), aspect=aspect
+                array,
+                cmap="jet",
+                vmin=np.min(array),
+                vmax=np.max(array),
+                aspect=aspect,
             )
-            
+
         ax_im.axis("off")
         ax_im.set_title(title)
         # ax_im.clim(0, 10)
@@ -979,7 +987,6 @@ def plot_coherence(
             location="bottom",
         )
         cbar.ax.set_xlabel("", rotation=0)
-
 
         ax_hist = axs_hist[idx]
         ax_hist.hist(
@@ -1000,6 +1007,128 @@ def plot_coherence(
     fig_im.suptitle(suptitle)
     fig_hist.suptitle(suptitle)
 
-        # ax = (sns.kdeplot((array.flatten()), shade=False, ax=f_cc, legend=True, label=title))
+    # ax = (sns.kdeplot((array.flatten()), shade=False, ax=f_cc, legend=True, label=title))
 
     return fig_im, fig_hist
+
+
+def plot_grid_hist(data_dic, gamma=0.3, set_lim=False, *args, **kwargs):
+    import matplotlib.colors as mcolors
+    import pandas as pd
+
+    data = pd.DataFrame(data_dic, columns=data_dic.keys())
+
+    g = sns.PairGrid(data, diag_sharey=False, corner=True)
+
+    g.map_lower(sns.histplot, norm=mcolors.PowerNorm(gamma), *args, **kwargs)
+    g.map_diag(sns.histplot, bins="auto")
+    # g.map_upper(sns.kdeplot)
+    # g.axes[:,:].set_xlim(0,)
+
+    if set_lim:
+        for index in range(g.axes[:, :].shape[0]):
+            if "ratio" in g.axes[-1, index].get_xlabel().lower():
+                g.axes[-1, index].set_xlim(0, 2.5)
+
+            elif "alpha" in g.axes[-1, index].get_xlabel().lower():
+                g.axes[-1, index].set_xlim(0, 90)
+            else:
+                g.axes[-1, index].set_xlim(0, 1)
+
+            if "ratio" in g.axes[index, 0].get_ylabel().lower():
+                g.axes[index, 0].set_ylim(0, 2.5)
+
+            elif "alpha" in g.axes[index, 0].get_ylabel().lower():
+                g.axes[index, 0].set_ylim(0, 90)
+
+            else:
+                g.axes[index, 0].set_ylim(0, 1)
+    return g
+
+
+def plot_hist2d_sb(x, y, gamma=0.3, *args, **kwargs):
+    import matplotlib.colors as mcolors
+    from mpl_toolkits.axes_grid1 import make_axes_locatable
+
+    fig, axScatter = plt.subplots(figsize=(10, 10))
+    bins = 500
+    # the scatter plot:
+    # axScatter.hist2d(x.flatten(), y.flatten(),
+    #          bins=bins, norm=mcolors.PowerNorm(gamma),  cmap='inferno') # range=np.array([(0, 1), (0, 90)])
+    # axScatter.set_aspect(1.)
+    sns.histplot(
+        x=x.flatten(),
+        y=y.flatten(),
+        ax=axScatter,
+        bins=bins,
+        norm=mcolors.PowerNorm(gamma),
+        *args,
+        **kwargs,
+    )
+
+    # create new axes on the right and on the top of the current axes
+    # The first argument of the new_vertical(new_horizontal) method is
+    # the height (width) of the axes to be created in inches.
+    divider = make_axes_locatable(axScatter)
+    axHistx = divider.append_axes("top", 1.2, pad=0.0, sharex=axScatter)
+    axHisty = divider.append_axes("right", 1.2, pad=0.0, sharey=axScatter)
+
+    # make some labels invisible
+    axHistx.xaxis.set_tick_params(labelbottom=False)
+    axHisty.yaxis.set_tick_params(labelleft=False)
+    axHistx.axis("off")
+    axHisty.axis("off")
+    # axHistx.his+
+    axHistx.hist(x.flatten(), bins=bins, histtype="step")
+    axHisty.hist(
+        y.flatten(), bins=bins, histtype="step", orientation="horizontal"
+    )
+
+    # sns.kdeplot(x=x.flatten(), ax=axHistx, color="r", shade=True)
+
+    # sns.kdeplot(y=y.flatten(), ax=axHisty, color="b", shade=True)
+
+    return fig
+
+
+def plot_hist2d_sb2(x, y, gamma, *args, **kwargs):
+    import matplotlib.colors as mcolors
+    from mpl_toolkits.axes_grid1 import make_axes_locatable
+
+    fig, axScatter = plt.subplots(figsize=(10, 10))
+    bins = 500
+    # the scatter plot:
+    # axScatter.hist2d(x.flatten(), y.flatten(),
+    #          bins=bins, norm=mcolors.PowerNorm(gamma),  cmap='inferno') # range=np.array([(0, 1), (0, 90)])
+    # axScatter.set_aspect(1.)
+    sns.histplot(
+        x=x.flatten(),
+        y=y.flatten(),
+        ax=axScatter,
+        bins=bins,
+        norm=mcolors.PowerNorm(gamma),
+        *args,
+        **kwargs,
+    )
+
+    # create new axes on the right and on the top of the current axes
+    # The first argument of the new_vertical(new_horizontal) method is
+    # the height (width) of the axes to be created in inches.
+    divider = make_axes_locatable(axScatter)
+    axHistx = divider.append_axes("top", 1.2, pad=0.0, sharex=axScatter)
+    axHisty = divider.append_axes("right", 1.2, pad=0.0, sharey=axScatter)
+
+    # make some labels invisible
+    axHistx.xaxis.set_tick_params(labelbottom=False)
+    axHisty.yaxis.set_tick_params(labelleft=False)
+    axHistx.axis("off")
+    axHisty.axis("off")
+    # axHistx.his+
+    # axHistx.hist(x.flatten(), bins=bins, histtype="step")
+    # axHisty.hist(y.flatten(), bins=bins, histtype="step", orientation='horizontal')
+
+    sns.histplot(x=x.flatten(), ax=axHistx, color="r", shade=True)
+
+    sns.histplot(y=y.flatten(), ax=axHisty, color="b", shade=True)
+
+    return fig

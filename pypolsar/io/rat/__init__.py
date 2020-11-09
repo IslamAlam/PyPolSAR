@@ -49,6 +49,7 @@ complex data follow IEEE standards and are stored with little endian byte orderi
 [3. MD Tabel](https://www.tablesgenerator.com/markdown_tables)
 """
 
+from .geo_rat import *
 # RAT file read and write utilities
 from .ste_io import loadrat, readrat, saverat
 
