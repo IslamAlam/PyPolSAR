@@ -1,7 +1,9 @@
-SHELL := /usr/bin/env bash
+# SHELL := /usr/bin/env bash
 
 IMAGE := pypolsar
 VERSION := latest
+POETRY ?= $(HOME)/.conda/envs/mans_is/bin/poetry
+
 
 #! An ugly hack to create individual flags
 ifeq ($(STRICT), 1)
@@ -112,6 +114,114 @@ check-style:
 	$(ISORT_COMMAND_FLAG)poetry run isort --settings-path pyproject.toml --check-only
 	$(MYPY_COMMAND_FLAG)poetry run mypy --config-file setup.cfg pypolsar tests/**/*.py
 
+.PHONY: lint-black
+lint-black:
+	@echo "\033[92m< linting using black...\033[0m"
+	@$(POETRY) run black .
+	@echo "\033[92m> done\033[0m"
+	@echo
+
+.PHONY: lint-flake8
+lint-flake8:
+	@echo "\033[92m< linting using flake8...\033[0m"
+	@$(POETRY) run flake8 aioaerospike tests
+	@echo "\033[92m> done\033[0m"
+	@echo
+
+.PHONY: lint-isort
+lint-isort:
+	@echo "\033[92m< linting using isort...\033[0m"
+	@$(POETRY) run isort --recursive .
+	@echo "\033[92m> done\033[0m"
+	@echo
+
+.PHONY: lint-mypy
+lint-mypy:
+	@echo "\033[92m< linting using mypy...\033[0m"
+	@$(POETRY) run mypy pypolsar tests/**/*.py
+	@echo "\033[92m> done\033[0m"
+	@echo
+
+.PHONY: lint
+lint: lint-black lint-flake8 lint-isort lint-mypy
+
+.PHONY: lint-check-black
+lint-check-black:
+	@echo "\033[92m< linting using black...\033[0m"
+	@$(POETRY) run black --check --diff .
+	@echo "\033[92m> done\033[0m"
+	@echo
+
+.PHONY: lint-check-flake8
+lint-check-flake8:
+	@echo "\033[92m< linting using flake8...\033[0m"
+	@$(POETRY) run flake8 aioaerospike tests
+	@echo "\033[92m> done\033[0m"
+	@echo
+
+.PHONY: lint-check-isort
+lint-check-isort:
+	@echo "\033[92m< linting using isort...\033[0m"
+	@$(POETRY) run isort --check-only --diff --recursive .
+	@echo "\033[92m> done\033[0m"
+	@echo
+
+.PHONY: lint-check-mypy
+lint-check-mypy:
+	@echo "\033[92m< linting using mypy...\033[0m"
+	@$(POETRY) run mypy --ignore-missing-imports --follow-imports=silent aioaerospike tests
+	@echo "\033[92m> done\033[0m"
+	@echo
+
+.PHONY: lint-check
+lint-check: lint-check-black lint-check-flake8 lint-check-isort lint-check-mypy
+
+.PHONY: major
+major:
+	poetry version major
+
+.PHONY: minor
+minor:
+	poetry version minor
+
+.PHONY: patch
+patch:
+	poetry version patch
+
+.PHONY: premajor
+premajor:
+	poetry version premajor
+
+.PHONY: preminor
+preminor:
+	poetry version preminor
+
+.PHONY: prepatch
+prepatch:
+	poetry version prepatch
+
+.PHONY: prerelease
+prerelease:
+	poetry version prerelease
+
+
+.PHONY: publish
+publish:
+	poetry build && poetry install && poetry publish
+
+.PHONY: publish-patch
+publish-patch: lint patch publish
+
+#	major	1.3.0	2.0.0
+#	minor	2.1.4	2.2.0
+#	patch	4.1.1	4.1.2
+#	premajor	1.0.2	2.0.0-alpha.0
+#	preminor	1.0.2	1.1.0-alpha.0
+#	prepatch	1.0.2	1.0.3-alpha.0
+#	prerelease	1.0.2	1.0.3-alpha.0
+#	prerelease	1.0.3-alpha.0	1.0.3-alpha.1
+#	prerelease	1.0.3-beta.0	1.0.3-beta.1
+
 .PHONY: codestyle
 codestyle:
 	poetry run pre-commit run --all-files
@@ -120,8 +230,8 @@ codestyle:
 test:
 	poetry run pytest
 
-.PHONY: lint
-lint: test check-safety check-style
+.PHONY: lint-test
+lint-test: test check-safety check-style
 
 # Example: make docker VERSION=latest
 # Example: make docker IMAGE=some_name VERSION=0.1.0
