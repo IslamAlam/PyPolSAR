@@ -72,3 +72,26 @@ def MapPlot(ax=None, extend=None, scale_bar_plot=True, scale_bar_length=10,  sca
         
     return ax
 
+def MapDataPlot(ax=None, extend=None, scale_bar_plot=True, scale_bar_length=10,  scale_bar_location=(0.5, 0.05), scale_bar_linewidth=3):
+    from cartopy import crs as ccrs
+    from cartopy.mpl.gridliner import LONGITUDE_FORMATTER, LATITUDE_FORMATTER
+    
+    # Set Projection to EPSG:3857 (aka Pseudo-Mercator, Spherical Mercator or Web Mercator) is the coordinate system used by Google Maps and web mapping application.
+    crs_epsg = ccrs.epsg('3857')
+    if ax is None:
+        fig, ax = plt.subplots(1, 1, subplot_kw={'projection': crs_epsg},
+                        figsize=(10, 10))
+        
+    # Make the CartoPy plot
+    ax = plt.axes(projection=crs_epsg)
+
+    if extend is None:
+        ax.set_extent([0, 180, 0,  90], crs=ccrs.PlateCarree(central_longitude=0))
+    else:
+        ax.set_extent(extend, crs=ccrs.PlateCarree(central_longitude=0))
+        
+    if scale_bar_plot == True:
+        scale_bar(ax, length=scale_bar_length, location=scale_bar_location, linewidth=scale_bar_linewidth)
+
+        
+    return ax
